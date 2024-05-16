@@ -1,0 +1,21 @@
+﻿<Window x:Class="MaHoaCaesar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MaHoaCaesar"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="Mã hoá" HorizontalAlignment="Left" Margin="93,328,0,0" VerticalAlignment="Top" Width="147" Height="66" Click="MaHoa"/>
+        <TextBox x:Name="txtPlain" HorizontalAlignment="Left" Margin="435,102,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256"  Height="44"/>
+        <Label Content="Nhập thông tin cần mã hoá" HorizontalAlignment="Left" Margin="230,102,0,0" VerticalAlignment="Top" Height="44" Width="183"/>
+        <TextBox x:Name="txtKhoaK" HorizontalAlignment="Left" Margin="435,164,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256"  Height="44"/>
+        <Label Content="Nhập khoá K" HorizontalAlignment="Left" Margin="230,164,0,0" VerticalAlignment="Top" Height="44" Width="92"/>
+        <TextBox x:Name="txtCipher" HorizontalAlignment="Left" Margin="435,232,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256"  Height="44"/>
+        <Label Content="Thông tin sau khi mã hoá" HorizontalAlignment="Left" Margin="230,232,0,0" VerticalAlignment="Top" Height="44" Width="170"/>
+        <Label Content="MÃ HOÁ CEASAR" HorizontalAlignment="Left" Margin="317,31,0,0" VerticalAlignment="Top" Width="246" Height="51"/>
+        <Button Content="Giải mã" HorizontalAlignment="Left" Margin="535,328,0,0" VerticalAlignment="Top" Width="147" Height="66" Click="GiaiMa"/>
+
+    </Grid>
+</Window>
