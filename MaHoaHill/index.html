@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hill Cipher</title>
+  <style>
+    .matrix-input {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .matrix-container {
+      display: grid;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .matrix-container input {
+      width: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div>
+      <p>Nhập ma trận khóa K</p>
+      <p>Nhập thông điệp cần mã hóa</p>
+      <input type="text" id="plainText">
+    </div>
+    <div class="matrix-input">
+      <p>Nhập số dòng:</p>
+      <input type="number" id="rows" min="1">
+      <p>Nhập số cột:</p>
+      <input type="number" id="cols" min="1">
+    </div>
+    <div id="matrix-container" class="matrix-container">
+    </div>
+    <button id="encryptButton">Mã hóa</button>
+    <div>
+      <p>Sau khi mã hóa</p>
+      <input type="text" id="cipherText" readonly>
+    </div>
+  </div>
+  <script src="./script.js">
+
+  </script>
+</body>
+
+</html>
