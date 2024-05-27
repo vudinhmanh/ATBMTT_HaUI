@@ -25,20 +25,21 @@ namespace MaHoaCaesar
             string plainText = txtPlain.Text;
             string ciphertext = "";
             int key = int.Parse(txtKhoaK.Text);
-            for (int i = 0; i < plainText.Length; i++)
+            foreach (char ch in plainText)
             {
-                var indexPlainText = (int)plainText[i];
-                if(indexPlainText >= 65 && indexPlainText <= 90) {
-                    int res = (indexPlainText - 65 + key) % 26;
-                    ciphertext += (char)(res + 65);
+                if (char.IsUpper(ch))
+                {
+                    char encryptedChar = (char)((ch + key - 'A') % 26 + 'A');
+                    ciphertext += encryptedChar;
                 }
-                else if (indexPlainText >= 97 && indexPlainText <= 122){
-                    int res = (indexPlainText - 97 + key) % 26;
-                    ciphertext += (char)(res + 97);
+                else if (char.IsLower(ch))
+                {
+                    char encryptedChar = (char)((ch + key - 'a') % 26 + 'a');
+                    ciphertext += encryptedChar;
                 }
                 else
                 {
-                    ciphertext += plainText[i];
+                    ciphertext += ch;
                 }
             }
             txtCipher.Text = ciphertext;
@@ -48,13 +49,22 @@ namespace MaHoaCaesar
             string ciphertext = txtCipher.Text;
             string plainText = "";
             int key = int.Parse(txtKhoaK.Text);
-            for (int i = 0; i < ciphertext.Length; i++)
+
+            foreach (char ch in ciphertext)
             {
-                var indexCipherText = (int)ciphertext[i];
-                if (indexCipherText >= 65 && indexCipherText <= 90)
+                if (char.IsUpper(ch))
                 {
-                    int res = (indexCipherText - 65 - key) % 26;
-                    plainText += (char)(res + 65);
+                    char decryptedChar = (char)((ch - key - 'A' + 26) % 26 + 'A');
+                    plainText += decryptedChar;
+                }
+                else if (char.IsLower(ch))
+                {
+                    char decryptedChar = (char)((ch - key - 'a' + 26) % 26 + 'a');
+                    plainText += decryptedChar;
+                }
+                else
+                {
+                    plainText += ch;
                 }
             }
             txtPlain.Text = plainText;

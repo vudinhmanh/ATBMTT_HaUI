@@ -2,14 +2,20 @@
 <html lang="en">
 
 <head>
+  <script language="JavaScript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hill Cipher</title>
   <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     .matrix-input {
       margin-bottom: 5px;
-      display: flex;
-      align-items: center;
     }
 
     .matrix-container {
@@ -20,31 +26,42 @@
 
     .matrix-container input {
       width: 50px;
+      height: 50px;
       text-align: center;
+    }
+    h1 {
+      text-transform: uppercase;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
+    <h1>Mã hoá hill</h1>
     <div>
-      <p>Nhập ma trận khóa K</p>
       <p>Nhập thông điệp cần mã hóa</p>
       <input type="text" id="plainText">
     </div>
     <div class="matrix-input">
-      <p>Nhập số dòng:</p>
-      <input type="number" id="rows" min="1">
-      <p>Nhập số cột:</p>
-      <input type="number" id="cols" min="1">
+      <p>Nhập ma trận khóa K</p>
+      <div>
+        <p>Nhập số hàng:</p>
+        <input type="number" id="rows" min="1">
+      </div>
+      <div>
+        <p>Nhập số cột:</p>
+        <input type="number" id="cols" min="1">
+      </div>
+
     </div>
     <div id="matrix-container" class="matrix-container">
     </div>
     <button id="encryptButton">Mã hóa</button>
     <div>
       <p>Sau khi mã hóa</p>
-      <input type="text" id="cipherText" readonly>
+      <input type="text" id="cipherText" >
     </div>
+    <button id="dencryptButton">Giải mã</button>
   </div>
   <script src="./script.js">
 

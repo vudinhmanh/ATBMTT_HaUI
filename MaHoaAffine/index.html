@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affine Cipher</title>
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height:100vh;
+    }
+    h1 {
+      text-transform: uppercase;
+    }
+    .container div {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>mã affine</h1>
+    <div>
+      <label for="plainText">Plain Text:</label>
+      <input type="text" id="plainText">
+    </div>
+    <div>
+      <label for="kText">Key (a, b):</label>
+      <input type="text" id="kText" placeholder="e.g., 5,8">
+    </div>
+    <div>
+      <label for="cypherText">Cipher Text:</label>
+      <input type="text" id="cypherText">
+    </div>
+    <div>
+      <button id="encryptButton">Encrypt</button>
+      <button id="decryptButton">Decrypt</button>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>

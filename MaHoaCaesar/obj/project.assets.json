@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\MaHoaCaesar\\MaHoaCaesar.csproj",
+      "projectUniqueName": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\Code\\ATBMTT_HaUI\\MaHoaCaesar\\MaHoaCaesar.csproj",
       "projectName": "MaHoaCaesar",
-      "projectPath": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\MaHoaCaesar\\MaHoaCaesar.csproj",
+      "projectPath": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\Code\\ATBMTT_HaUI\\MaHoaCaesar\\MaHoaCaesar.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\MaHoaCaesar\\obj\\",
+      "outputPath": "D:\\HaUI\\Kì 6\\An toàn bảo mật thông tin\\Code\\ATBMTT_HaUI\\MaHoaCaesar\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
