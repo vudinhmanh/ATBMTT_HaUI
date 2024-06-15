@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p#output {
+            white-space: pre-wrap;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>RSA Encryption</h1>
+        <div>
+            <!-- Nhập thông điệp cần mã hóa -->
+            <label for="message">1. Nhập thông điệp cần mã hóa:</label>
+            <input type="text" id="message" name="message"><br><br>
+            <!-- Các nút để kích hoạt các chức năng RSA khác nhau -->
+            <button onclick="createKeys()">2. Tạo khóa bí mật và khóa công khai</button><br>
+            <button onclick="encryptMessage()">3. Tiến hành bảo mật thông điệp đã nhập</button><br>
+            <button onclick="encryptAuth()">4. Tiến hành xác thực thông điệp</button><br>
+            <!-- Nhập bản mã để giải mã -->
+            <label for="encryptedMessage">Nhập bản mã để giải mã:</label>
+            <input type="text" id="encryptedMessage" name="encryptedMessage"><br><br>
+            <button onclick="decryptMessage()">5. Giải mã bản mã để thu được bản rõ ban đầu</button><br>
+            <button onclick="decryptAuth()">6. Giải mã thông điệp xác thực để thu được bản rõ ban đầu</button><br>
+        </div>
+        <div>
+            <p id="output"></p>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục để lưu các giá trị của p, q, N, n, e và d
+        let p, q, N, n, e, d;
+
+        // Hàm tính UCLN (Ước chung lớn nhất) của hai số a và b
+        function gcd(a, b) {
+            while (b !== 0) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
+        // Hàm kiểm tra số nguyên tố
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        // Hàm tạo số nguyên tố p và q
+        function createPrime() {
+            do {
+                p = Math.floor(Math.random() * 100) + 2;
+                q = Math.floor(Math.random() * 100) + 2;
+            } while (gcd(p, q) !== 1 || !isPrime(p) || !isPrime(q));
+        }
+
+        // Hàm tính extended Euclidean để tìm nghịch đảo modular
+        function extendedEuclidean(a, b) {
+            // Bước 1: Kiểm tra điều kiện dừng khi b = 0
+            if (b === 0) return [1, 0, a]; // Trả về mảng [x, y, gcd] với gcd là ước chung lớn nhất của a và b
+
+            // Bước 2: Gọi đệ quy để tính extended Euclidean của b và a % b
+            const [x1, y1, gcd] = extendedEuclidean(b, a % b);
+
+            // Bước 3: Tính x và y dựa trên các công thức từ thuật toán mở rộng Euclid
+            const x = y1; // x là phần tử đầu tiên của mảng kết quả từ bước đệ quy trước đó
+            const y = x1 - Math.floor(a / b) * y1; // y là phần tử thứ hai của mảng kết quả từ bước đệ quy trước đó
+
+            // Trả về mảng [x, y, gcd] là kết quả của extended Euclidean cho cặp a và b
+            return [x, y, gcd];
+        }
+
+        // Hàm tính nghịch đảo modular của e mod n
+        function modInverse(e, n) {
+            const [x, y, gcd] = extendedEuclidean(e, n);
+            if (gcd !== 1) return null; // Không có nghịch đảo modular nếu gcd != 1
+            return (x % n + n) % n;
+        }
+
+        // Hàm tạo khóa công khai và khóa riêng
+        function createKeys() {
+            createPrime(); // Gọi hàm createPrime để tạo hai số nguyên tố ngẫu nhiên p và q
+
+            N = p * q; // Tính N = p * q (N là module công khai và riêng)
+
+            n = (p - 1) * (q - 1); // Tính n = (p - 1) * (q - 1) (n là số Euler của N)
+
+            e = 2;
+            while (e < n) {
+                if (gcd(e, n) === 1) // Tìm số nguyên e sao cho gcd(e, n) = 1
+                    break;
+                else
+                    e++;
+            }
+
+            d = modInverse(e, n); // Tính d là nghịch đảo modular của e modulo n
+
+            // Hiển thị kết quả ra phần tử có id là 'output'
+            document.getElementById('output').innerText =
+                `p: ${p}, q: ${q}\nKhóa công khai: Ku = (${e}, ${N})\nKhóa riêng: Kr = (${d}, ${N})`;
+        }
+
+        // Hàm chuyển đổi chuỗi thành mảng ASCII
+        function stringToAsciiArray(str) {
+            return str.split('').map(char => char.charCodeAt(0));
+        }
+
+        // Hàm chuyển đổi mảng ASCII thành chuỗi
+        function asciiArrayToString(array) {
+            return array.map(code => String.fromCharCode(code)).join('');
+        }
+        // Hàm tính lũy thừa modular
+        function powerMod(base, exp, mod) {
+            let result = 1; // Khởi tạo kết quả ban đầu là 1
+            while (exp > 0) {
+                if (exp % 2 === 1) // Nếu exp là số lẻ
+                    result = (result * base) % mod; // Cập nhật kết quả: (result * base) % mod
+                base = (base * base) % mod; // Cập nhật base: (base^2) % mod
+                exp = Math.floor(exp / 2); // Chia exp cho 2 và làm tròn xuống
+            }
+            return result; // Trả về kết quả cuối cùng của (base^exp) % mod
+        }
+        // Hàm mã hóa thông điệp
+        function encryptMessage() {
+            const message = document.getElementById('message').value;
+            const asciiArray = stringToAsciiArray(message);
+            const encryptedArray = asciiArray.map(charCode => powerMod(charCode, e, N));
+            document.getElementById('output').innerText = `Mã hóa: ${encryptedArray.join(', ')}`;
+        }
+
+        // Hàm giải mã thông điệp
+        function decryptMessage() {
+            const encryptedMessage = document.getElementById('encryptedMessage').value;
+            const encryptedArray = encryptedMessage.split(',').map(Number);
+            const decryptedArray = encryptedArray.map(encryptedCharCode => powerMod(encryptedCharCode, d, N));
+            const decryptedMessage = asciiArrayToString(decryptedArray);
+            document.getElementById('output').innerText = `Giải mã: ${decryptedMessage}`;
+        }
+
+        // Hàm mã hóa xác thực thông điệp
+        function encryptAuth() {
+            const message = document.getElementById('message').value;
+            const asciiArray = stringToAsciiArray(message);
+            const encryptedArray = asciiArray.map(charCode => powerMod(charCode, d, N));
+            document.getElementById('output').innerText = `Mã hóa xác thực: ${encryptedArray.join(', ')}`;
+        }
+
+        // Hàm giải mã xác thực thông điệp
+        function decryptAuth() {
+            const encryptedMessage = document.getElementById('encryptedMessage').value;
+            const encryptedArray = encryptedMessage.split(',').map(Number);
+            const decryptedArray = encryptedArray.map(encryptedCharCode => powerMod(encryptedCharCode, e, N));
+            const decryptedMessage = asciiArrayToString(decryptedArray);
+            document.getElementById('output').innerText = `Giải mã xác thực: ${decryptedMessage}`;
+        }
+    </script>
+</body>
+
+</html>

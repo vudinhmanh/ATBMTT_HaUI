@@ -4,6 +4,7 @@ const matrixContainer = document.getElementById('matrix-container');
 const plainText = document.getElementById('plainText');
 const cipherText = document.getElementById('cipherText');
 const encryptButton = document.getElementById('encryptButton');
+const dencryptButton = document.getElementById('dencryptButton');
 
 const generateMatrix = () => {
   const rows = parseInt(rowsInput.value);
@@ -22,53 +23,54 @@ const generateMatrix = () => {
     }
   }
 };
-// Hàm addPaddingText thêm padding cho text để đảm bảo độ dài của text chia hết cho số cột của ma trận K
+
 const addPaddingText = (text, cols) => {
   const paddingChar = 'X';
   const paddedLength = Math.ceil(text.length / cols) * cols;
   return text.padEnd(paddedLength, paddingChar);
-  // phương thức padEnd của chuỗi được sử dụng để thêm các ký tự 'X' 
-  // vào cuối chuỗi text cho đến khi độ dài của chuỗi đạt paddedLength.
 };
-//Hàm convertTextToMatrix để chuyển văn bản nhập vào thành ma trận (A = 0, B = 1, ..., Z = 25)
+
 const convertTextToMatrix = (text, cols) => {
   const matrixText = [];
-  for (let i = 0; i < text.length; i += cols) { // i lặp với bước nhảy cols với mỗi lần lặp sẽ xử lý cols ký tự để tạo 1 hàng mới
-    const tmpRow = []; // row là một mảng tạm thời sẽ chứa các giá trị số nguyên của các ký tự trong khối hiện tại.
-    for (let j = 0; j < cols; j++) { // j duyệt qua từng ký tự trong khối cols hiện tại
+  for (let i = 0; i < text.length; i += cols) {
+    const tmpRow = [];
+    for (let j = 0; j < cols; j++) {
       tmpRow.push(text.charCodeAt(i + j) - 65);
     }
     matrixText.push(tmpRow);
   }
   return matrixText;
 };
-// hàm getMatrixK lấy ra ma trận K vừa nhập
+
 const getMatrixK = (rows, cols) => {
   const matrixK = [];
   const inputK = document.querySelectorAll('.matrix-cell');
   for (let i = 0; i < rows; i++) {
-    const row = []; //Khởi tạo một hàng mới để lưu trữ các giá trị của hàng.
+    const row = [];
     for (let j = 0; j < cols; j++) {
-      row.push(parseInt(inputK[i * cols + j].value)); //i là index hàng của ma trận, cols số cột, j index của cột ma trận
-      //Nếu i = 0 (hàng đầu tiên) và j = 0 (cột đầu tiên), thì i * cols + j = 0.
-
+      row.push(parseInt(inputK[i * cols + j].value));
     }
     matrixK.push(row);
   }
   return matrixK;
 };
-// Hàm multiplyMatrices nhân 2 ma trận matrixText và matrixK sau đó mod 26
-// Syntax 
-// array.reduce(function(total, currentValue, currentIndex, arr), initialValue)
-// array.map(function(currentValue, index, arr), thisValue)
-const multiplyMatrices = (matrixText, matrixK) => {
-  return matrixText.map(row => // Duyệt qua từng hàng của ma trận matrixText
-    row.map((_, j) => // Duyệt qua từng cột của mỗi hàng
-      row.reduce((sum, _, i) => sum + row[i] * matrixK[i][j], 0) % 26
-      // Tính tổng của tích vô hướng giữa hàng hiện tại của matrixText và cột thứ j của matrixK
-    )
-  );
+
+const multiplyMatrices = (matrixA, matrixB) => {
+  const result = [];
+  for (let i = 0; i < matrixA.length; i++) {
+    result[i] = [];
+    for (let j = 0; j < matrixB[0].length; j++) {
+      let sum = 0;
+      for (let k = 0; k < matrixB.length; k++) {
+        sum += matrixA[i][k] * matrixB[k][j];
+      }
+      result[i][j] = sum % 26;
+      if (result[i][j] < 0) result[i][j] += 26; // Ensure non-negative result
+    }
+  }
+  return result;
 };
+
 const encryptText = () => {
   const rows = parseInt(rowsInput.value);
   const cols = parseInt(colsInput.value);
@@ -84,30 +86,37 @@ const encryptText = () => {
 
   const resMatrix = multiplyMatrices(matrixText, matrixK);
   const encryptedText = resMatrix.flat().map(num => String.fromCharCode(num + 65)).join('');
-  cipherText.value = encryptedText; 
-
+  cipherText.value = encryptedText;
 };
 
 const dencryptText = () => {
   const rows = parseInt(rowsInput.value);
   const cols = parseInt(colsInput.value);
-  const encryptedText = cipherText.value.toUpperCase();
+  const encryptedText = cipherText.value.replace(/[^A-Za-z]/g, '').toUpperCase();
   const matrixK = getMatrixK(rows, cols);
+
+  // Tính ma trận nghịch đảo
   try {
-    var inverseMatrixK = math.inv(matrixK);
+    var inverseMatrixK = key_inverse_cal(matrixK);
   } catch (error) {
-    alert(error)
+    alert('Lỗi khi tính ma trận nghịch đảo: ' + error.message);
+    return;
   }
-// Tính ma trận kết quả bằng cách nhân ma trận văn bản đã mã hóa với ma trận nghịch đảo
-const encryptedMatrix = convertTextToMatrix(encryptedText, cols);
-console.log('====================================');
-console.log(encryptedMatrix);
-console.log('====================================');
-const decryptedMatrix = multiplyMatrices(encryptedMatrix, inverseMatrixK);
-// Chuyển ma trận kết quả thành văn bản đã giải mã
-const decryptedText = decryptedMatrix.flat().map(num => String.fromCharCode(num + 65)).join('');
-plainText.value = decryptedText;
-}
+
+  // Chuyển đổi encryptedText thành ma trận dữ liệu đã mã hóa
+  const encryptedMatrix = convertTextToMatrix(encryptedText, cols);
+
+  // Giải mã dữ liệu
+  const decryptedMatrix = multiplyMatrices(encryptedMatrix, inverseMatrixK);
+
+  // Chuyển ma trận đã giải mã thành văn bản
+  const decryptedText = decryptedMatrix.flat().map(num => {
+    return String.fromCharCode(((num % 26) + 26) % 26 + 65); // Đảm bảo trong khoảng 'A'-'Z'
+  }).join('');
+
+  // Xóa các ký tự 'X' đệm
+  plainText.value = decryptedText.replace(/X+$/g, '');
+};
 rowsInput.addEventListener('input', generateMatrix);
 colsInput.addEventListener('input', generateMatrix);
 encryptButton.addEventListener('click', encryptText);
